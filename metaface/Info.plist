@@ -30,9 +30,9 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>MetaFace uses speech recognition to understand voice commands for hands-free operation.</string>
 
-	<!-- Camera Permission (Fallback for phone camera testing) -->
+	<!-- Camera Permission (Meta Glasses + Phone Camera) -->
 	<key>NSCameraUsageDescription</key>
-	<string>MetaFace can use your phone's camera for testing face detection when glasses aren't connected.</string>
+	<string>MetaFace uses the camera on your Meta Ray-Ban glasses to detect faces and estimate age in real-time. The camera stream is processed locally on your device to identify faces and provide instant voice feedback with age estimates. Your phone's camera can also be used for testing when glasses aren't connected.</string>
 
 	<!-- Photo Library Permission (For saving face thumbnails) -->
 	<key>NSPhotoLibraryUsageDescription</key>
