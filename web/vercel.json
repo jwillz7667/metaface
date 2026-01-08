@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/.well-known/apple-app-site-association",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "dest": "/.well-known/apple-app-site-association"
+    },
+    {
+      "src": "/callback/(.*)",
+      "status": 302,
+      "headers": {
+        "Location": "metaface://callback/$1"
+      }
+    },
+    {
+      "src": "/auth/(.*)",
+      "status": 302,
+      "headers": {
+        "Location": "metaface://auth/$1"
+      }
+    }
+  ]
+}

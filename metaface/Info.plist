@@ -2,9 +2,132 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- App Display Name -->
+	<key>CFBundleDisplayName</key>
+	<string>MetaFace</string>
+
+	<!-- Background Modes -->
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+		<string>external-accessory</string>
+		<string>audio</string>
+	</array>
+
+	<!-- Bluetooth Permissions (Required for Meta Glasses) -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>MetaFace needs Bluetooth to connect to your Meta glasses and receive the camera stream for face detection.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>MetaFace needs Bluetooth to communicate with your Meta glasses.</string>
+
+	<!-- Microphone Permission (For Voice Commands) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>MetaFace uses the microphone for voice commands like "scan face" or "what age" through your glasses.</string>
+
+	<!-- Speech Recognition Permission -->
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>MetaFace uses speech recognition to understand voice commands for hands-free operation.</string>
+
+	<!-- Camera Permission (Fallback for phone camera testing) -->
+	<key>NSCameraUsageDescription</key>
+	<string>MetaFace can use your phone's camera for testing face detection when glasses aren't connected.</string>
+
+	<!-- Photo Library Permission (For saving face thumbnails) -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MetaFace can save face scan images to your photo library.</string>
+
+	<!-- Local Network Permission (May be needed for some SDK features) -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>MetaFace may use local network for device discovery and communication.</string>
+
+	<!-- Meta Wearables SDK Configuration -->
+	<key>MWDAT</key>
+	<dict>
+		<key>AppLinkURLScheme</key>
+		<string>metaface://</string>
+		<key>MetaAppID</key>
+		<string>756435917496671</string>
+		<key>TeamID</key>
+		<string>487LC4H9U4</string>
+		<key>Analytics</key>
+		<dict>
+			<key>OptOut</key>
+			<false/>
+		</dict>
+	</dict>
+
+	<!-- URL Schemes (Required for Meta OAuth Callback) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.metaface.oauth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>metaface</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Queried URL Schemes (To check if Meta AI app is installed) -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fb</string>
+		<string>meta-ai</string>
+	</array>
+
+	<!-- External Accessory Protocol (For Meta Glasses) -->
+	<key>UISupportedExternalAccessoryProtocols</key>
+	<array>
+		<string>com.meta.ar.wearable</string>
+	</array>
+
+	<!-- Supported Interface Orientations -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+
+	<!-- App Transport Security -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+	</dict>
+
+	<!-- Status Bar Style -->
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+
+	<!-- Launch Screen -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>AccentColor</string>
+		<key>UIImageName</key>
+		<string>LaunchIcon</string>
+	</dict>
+
+	<!-- Required Device Capabilities -->
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>bluetooth-le</string>
+		<string>armv7</string>
 	</array>
 </dict>
 </plist>

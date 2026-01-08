@@ -1,0 +1,21 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "487LC4H9U4.Res.metaface",
+        "paths": [
+          "/callback/*",
+          "/metaface/*",
+          "/auth/*",
+          "/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "487LC4H9U4.Res.metaface"
+    ]
+  }
+}
