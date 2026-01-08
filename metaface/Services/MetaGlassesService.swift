@@ -343,7 +343,12 @@ final class MetaGlassesService: ObservableObject {
     // MARK: - Stream Management
     func startStreaming(configuration: StreamConfiguration? = nil) async -> Bool {
         let config = configuration ?? .default
+
+        NSLog("[MetaFace] startStreaming called - connectionState: \(connectionState), registrationState: \(registrationState)")
+        NSLog("[MetaFace] connectedDevice: \(String(describing: connectedDevice?.name))")
+
         guard connectionState == .connected, let device = connectedDevice else {
+            NSLog("[MetaFace] ERROR: No device connected")
             streamError = NSError(
                 domain: "MetaGlassesService",
                 code: -2,
@@ -353,6 +358,7 @@ final class MetaGlassesService: ObservableObject {
         }
 
         guard device.isCompatible else {
+            NSLog("[MetaFace] ERROR: Device not compatible for streaming")
             streamError = NSError(
                 domain: "MetaGlassesService",
                 code: -3,
@@ -360,6 +366,26 @@ final class MetaGlassesService: ObservableObject {
             )
             return false
         }
+
+        // Check registration state
+        guard registrationState == .registered else {
+            NSLog("[MetaFace] ERROR: Not registered with Meta. State: \(registrationState)")
+            streamError = NSError(
+                domain: "MetaGlassesService",
+                code: -10,
+                userInfo: [NSLocalizedDescriptionKey: "Not registered with Meta. Please authorize the app first."]
+            )
+            return false
+        }
+
+        // Check camera permission
+        NSLog("[MetaFace] Checking camera permission...")
+        let hasPermission = await requestPermission()
+        guard hasPermission else {
+            NSLog("[MetaFace] ERROR: Camera permission denied")
+            return false
+        }
+        NSLog("[MetaFace] Camera permission granted")
 
         streamConfiguration = config
 
@@ -369,12 +395,15 @@ final class MetaGlassesService: ObservableObject {
             resolution: mapResolution(config.resolution),
             frameRate: config.frameRate
         )
+        NSLog("[MetaFace] Created StreamSessionConfig - resolution: \(config.resolution), frameRate: \(config.frameRate)")
 
         // Create device selector for specific device
         let deviceSelector = SpecificDeviceSelector(device: device.id)
+        NSLog("[MetaFace] Created SpecificDeviceSelector for device: \(device.id)")
 
         // Create and configure stream session
         streamSession = StreamSession(streamSessionConfig: sessionConfig, deviceSelector: deviceSelector)
+        NSLog("[MetaFace] Created StreamSession")
 
         guard let session = streamSession else {
             streamError = NSError(
@@ -414,12 +443,15 @@ final class MetaGlassesService: ObservableObject {
         }
 
         // Start the session
+        NSLog("[MetaFace] Starting stream session...")
         await session.start()
+        NSLog("[MetaFace] Stream session started - current state: \(session.state)")
 
         isStreaming = true
         connectionState = .streaming
         startStreamTimers()
 
+        NSLog("[MetaFace] Streaming started successfully")
         return true
     }
 
@@ -481,6 +513,11 @@ final class MetaGlassesService: ObservableObject {
 
     // MARK: - Frame Handling
     private func handleVideoFrame(_ frame: VideoFrame) {
+        // Log every 30th frame to avoid spam
+        if framesReceived % 30 == 0 {
+            NSLog("[MetaFace] Received frame #\(framesReceived)")
+        }
+
         let sampleBuffer = frame.sampleBuffer
         let uiImage = frame.makeUIImage()
 
@@ -500,27 +537,35 @@ final class MetaGlassesService: ObservableObject {
     }
 
     private func handleStreamStateChange(_ state: StreamSessionState) {
+        NSLog("[MetaFace] Stream state changed: \(state)")
         switch state {
         case .streaming:
+            NSLog("[MetaFace] Stream is now STREAMING")
             isStreaming = true
             connectionState = .streaming
         case .stopped, .stopping:
+            NSLog("[MetaFace] Stream STOPPED/STOPPING")
             if isStreaming {
                 isStreaming = false
                 connectionState = .connected
             }
         case .waitingForDevice:
+            NSLog("[MetaFace] Stream WAITING FOR DEVICE")
             connectionState = .connecting
         case .starting:
+            NSLog("[MetaFace] Stream STARTING")
             connectionState = .connecting
         case .paused:
+            NSLog("[MetaFace] Stream PAUSED")
             isStreaming = false
         @unknown default:
+            NSLog("[MetaFace] Stream unknown state")
             break
         }
     }
 
     private func handleStreamError(_ error: StreamSessionError) {
+        NSLog("[MetaFace] STREAM ERROR: \(error)")
         switch error {
         case .deviceNotFound(let deviceId):
             streamError = NSError(
